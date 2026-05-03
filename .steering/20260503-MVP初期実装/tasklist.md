@@ -8,21 +8,21 @@
 
 ## 1. プロジェクト初期設定
 
-- [ ] `package.json` 作成（React 19, TypeScript, Vite, Tailwind CSS, TanStack Query, Hono, @extractus/feed-extractor, clsx）
-- [ ] `vite.config.ts` 作成
-- [ ] `tailwind.config.ts` 作成
-- [ ] `tsconfig.json` 作成（`strict: true`）
-- [ ] `tsconfig.worker.json` 作成
-- [ ] `wrangler.toml` 作成（Workers・D1・Cron・Pages 設定）
-- [ ] `.env.example` 作成
-- [ ] `.gitignore` 更新
-- [ ] `README.md` 作成
+- [x] `package.json` 作成（React 19, TypeScript, Vite, Tailwind CSS, TanStack Query, Hono, @extractus/feed-extractor, clsx）
+- [x] `vite.config.ts` 作成
+- [x] `tailwind.config.ts` 作成
+- [x] `tsconfig.json` 作成（`strict: true`）
+- [x] `tsconfig.worker.json` 作成
+- [x] `wrangler.toml` 作成（Workers・D1・Cron・Pages 設定）
+- [x] `.env.example` 作成
+- [x] `.gitignore` 更新
+- [x] `README.md` 作成
 
 ---
 
 ## 2. DB マイグレーション
 
-- [ ] `migrations/0001_initial.sql` 作成
+- [x] `migrations/0001_initial.sql` 作成
   - `feeds` テーブル
   - `articles` テーブル（`UNIQUE(feed_id, guid)`）
   - `read_history` テーブル
@@ -32,17 +32,17 @@
 
 ## 3. 共通型定義
 
-- [ ] `src/types/index.ts` 作成
+- [x] `src/types/index.ts` 作成
   - `Feed` 型
-  - `Article` 型（`isRead` を派生プロパティとして含む）
-- [ ] `worker/types/index.ts` 作成
+  - `Article` 型（`isRead`, `feedIsFavorite` を含む）
+- [x] `worker/types/index.ts` 作成
   - `Env` インターフェース（`DB: D1Database`）
 
 ---
 
 ## 4. Worker — ライブラリ層
 
-- [ ] `worker/lib/db.ts` 作成
+- [x] `worker/lib/db.ts` 作成
   - `getFeeds(db)`
   - `getFeedById(db, id)`
   - `insertFeed(db, feed)`
@@ -51,73 +51,73 @@
   - `getArticles(db, options)` （unread_only / limit / offset）
   - `insertArticle(db, article)`
   - `markAsRead(db, articleId)`
-- [ ] `worker/lib/rss.ts` 作成
+- [x] `worker/lib/rss.ts` 作成
   - `parseFeed(url)`: `@extractus/feed-extractor` ラッパー、Atom/RSS 両対応
 
 ---
 
 ## 5. Worker — ルート実装
 
-- [ ] `worker/routes/feeds.ts` 作成
+- [x] `worker/routes/feeds.ts` 作成
   - `GET /api/feeds`
   - `POST /api/feeds`（URL fetch → タイトル取得 → INSERT）
   - `PATCH /api/feeds/:id`
   - `DELETE /api/feeds/:id`
-- [ ] `worker/routes/articles.ts` 作成
+- [x] `worker/routes/articles.ts` 作成
   - `GET /api/articles`
   - `POST /api/articles/:id/read`
-- [ ] `worker/cron/fetchFeeds.ts` 作成（Cron Trigger ハンドラ）
-- [ ] `worker/index.ts` 作成（Hono ルーティング + Cron scheduled ハンドラ）
-- [ ] `POST /api/cron/fetch` 開発用手動トリガーエンドポイント追加
+- [x] `worker/cron/fetchFeeds.ts` 作成（Cron Trigger ハンドラ）
+- [x] `worker/index.ts` 作成（Hono ルーティング + Cron scheduled ハンドラ）
+- [x] `POST /api/cron/fetch` 開発用手動トリガーエンドポイント追加
 
 ---
 
 ## 6. フロントエンド — ライブラリ層
 
-- [ ] `src/lib/api.ts` 作成（Workers API クライアント関数群）
-- [ ] `src/lib/markdown.ts` 作成（`exportToMarkdown(articles)` 関数）
+- [x] `src/lib/api.ts` 作成（Workers API クライアント関数群）
+- [x] `src/lib/markdown.ts` 作成（`exportToMarkdown(articles)` 関数）
 
 ---
 
 ## 7. フロントエンド — カスタムフック
 
-- [ ] `src/hooks/useArticles.ts` 作成（TanStack Query: 記事取得・既読管理）
-- [ ] `src/hooks/useFeeds.ts` 作成（TanStack Query: フィード CRUD）
-- [ ] `src/hooks/useSelection.ts` 作成（`Set<string>` による選択状態管理）
+- [x] `src/hooks/useArticles.ts` 作成（TanStack Query: 記事取得・既読管理）
+- [x] `src/hooks/useFeeds.ts` 作成（TanStack Query: フィード CRUD）
+- [x] `src/hooks/useSelection.ts` 作成（`Set<string>` による選択状態管理）
 
 ---
 
 ## 8. フロントエンド — コンポーネント
 
-- [ ] `src/components/Toast.tsx` 作成
-- [ ] `src/components/CopyBar.tsx` 作成（選択件数表示・コピーボタン）
-- [ ] `src/components/ArticleCard.tsx` 作成（チェックボックス・既読スタイル）
-- [ ] `src/components/ArticleList.tsx` 作成（お気に入り/その他セクション）
-- [ ] `src/components/FeedForm.tsx` 作成
-- [ ] `src/components/FeedList.tsx` 作成（★トグル・削除確認）
+- [x] `src/components/Toast.tsx` 作成
+- [x] `src/components/CopyBar.tsx` 作成（選択件数表示・コピーボタン）
+- [x] `src/components/ArticleCard.tsx` 作成（チェックボックス・既読スタイル）
+- [x] `src/components/ArticleList.tsx` 作成（お気に入り/その他セクション）
+- [x] `src/components/FeedForm.tsx` 作成
+- [x] `src/components/FeedList.tsx` 作成（★トグル・削除確認）
 
 ---
 
 ## 9. フロントエンド — ページ
 
-- [ ] `src/pages/index.tsx` 作成（記事一覧画面・未読トグル）
-- [ ] `src/pages/feeds.tsx` 作成（フィード管理画面）
-- [ ] `src/App.tsx` 作成（ルーティング設定）
-- [ ] `src/main.tsx` 作成
-- [ ] `src/index.css` 作成（Tailwind ディレクティブ）
+- [x] `src/pages/index.tsx` 作成（記事一覧画面・未読トグル）
+- [x] `src/pages/feeds.tsx` 作成（フィード管理画面）
+- [x] `src/App.tsx` 作成（ルーティング設定）
+- [x] `src/main.tsx` 作成
+- [x] `src/index.css` 作成（Tailwind ディレクティブ）
 
 ---
 
 ## 10. CI/CD
 
-- [ ] `.github/workflows/deploy.yml` 作成（`main` push 時に `wrangler deploy`）
+- [x] `.github/workflows/deploy.yml` 作成（`main` push 時に typecheck/lint/test/build/deploy）
 
 ---
 
 ## 11. テスト
 
-- [ ] `worker/lib/rss.test.ts` 作成（RSS パース単体テスト）
-- [ ] `src/lib/markdown.test.ts` 作成（Markdown 出力単体テスト）
+- [x] `worker/lib/rss.test.ts` 作成（RSS パース単体テスト）
+- [x] `src/lib/markdown.test.ts` 作成（Markdown 出力単体テスト）
 
 ---
 
