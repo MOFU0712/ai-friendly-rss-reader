@@ -2,8 +2,11 @@ import type { Env } from '../types';
 import { getFeeds, insertArticle, updateFeed } from '../lib/db';
 import { parseFeed } from '../lib/rss';
 
+const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+
 export async function fetchAllFeeds(env: Env): Promise<void> {
   const feeds = await getFeeds(env.DB);
+  const oneWeekAgo = new Date(Date.now() - ONE_WEEK_MS);
 
   for (const feed of feeds) {
     try {
@@ -12,6 +15,11 @@ export async function fetchAllFeeds(env: Env): Promise<void> {
 
       for (const entry of parsed.entries) {
         if (!entry.guid || !entry.url) continue;
+
+        // 1週間以上前の記事はスキップ
+        const publishedDate = new Date(entry.publishedAt);
+        if (publishedDate < oneWeekAgo) continue;
+
         await insertArticle(env.DB, {
           id: crypto.randomUUID(),
           feedId: feed.id,

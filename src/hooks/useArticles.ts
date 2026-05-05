@@ -18,6 +18,16 @@ export function useMarkRead() {
   });
 }
 
+export function useMarkMultipleRead() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (articleIds: string[]) => api.articles.markMultipleRead(articleIds),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['articles'] });
+    },
+  });
+}
+
 export function useFetchFeeds() {
   const queryClient = useQueryClient();
   return useMutation({

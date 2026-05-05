@@ -178,3 +178,53 @@ export async function markAsRead(db: D1Database, articleId: string): Promise<voi
     .bind(crypto.randomUUID(), articleId, new Date().toISOString())
     .run();
 }
+
+export async function markMultipleAsRead(db: D1Database, articleIds: string[]): Promise<void> {
+  if (articleIds.length === 0) return;
+
+  const now = new Date().toISOString();
+  const stmt = db.prepare(
+    'INSERT OR IGNORE INTO read_history (id, article_id, read_at) VALUES (?, ?, ?)',
+  );
+
+  await db.batch(
+    articleIds.map((articleId) => stmt.bind(crypto.randomUUID(), articleId, now)),
+  );
+}
+
+export async function saveFavorites(db: D1Database, articleIds: string[]): Promise<void> {
+  if (articleIds.length === 0) return;
+
+  const now = new Date().toISOString();
+  const stmt = db.prepare(
+    'INSERT OR IGNORE INTO favorites (id, article_id, saved_at) VALUES (?, ?, ?)',
+  );
+
+  await db.batch(
+    articleIds.map((articleId) => stmt.bind(crypto.randomUUID(), articleId, now)),
+  );
+}
+
+export async function getFavorites(
+  db: D1Database,
+  options: { limit?: number; offset?: number } = {},
+): Promise<Article[]> {
+  const { limit = 50, offset = 0 } = options;
+
+  const query = `
+    SELECT
+      a.*,
+      f.title AS feed_title,
+      f.is_favorite AS feed_is_favorite,
+      CASE WHEN rh.id IS NOT NULL THEN 1 ELSE 0 END AS is_read
+    FROM favorites fav
+    JOIN articles a ON fav.article_id = a.id
+    JOIN feeds f ON a.feed_id = f.id
+    LEFT JOIN read_history rh ON rh.article_id = a.id
+    ORDER BY fav.saved_at DESC
+    LIMIT ? OFFSET ?
+  `;
+
+  const result = await db.prepare(query).bind(limit, offset).all<ArticleRow>();
+  return result.results.map(toArticle);
+}

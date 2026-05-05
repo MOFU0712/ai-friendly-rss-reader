@@ -10,7 +10,7 @@ export function ArticlesPage() {
   const [unreadOnly, setUnreadOnly] = useState(true);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const { data: articles = [], isLoading, error } = useArticles(unreadOnly);
-  const { selectedIds, toggle, clear } = useSelection();
+  const { selectedIds, toggle, clear, selectAll } = useSelection();
   const fetchFeeds = useFetchFeeds();
 
   const selectedArticles = articles.filter((a) => selectedIds.has(a.id));
@@ -37,6 +37,13 @@ export function ArticlesPage() {
             className="text-sm text-gray-600 hover:text-gray-900"
           >
             {unreadOnly ? '未読のみ ●' : '全て表示 ○'}
+          </button>
+          <button
+            onClick={() => selectAll(articles.map((a) => a.id))}
+            disabled={articles.length === 0}
+            className="text-sm text-gray-600 hover:text-gray-900 disabled:opacity-50"
+          >
+            全件選択
           </button>
           <Link to="/favorites" className="text-sm text-blue-600 hover:text-blue-700">
             お気に入り

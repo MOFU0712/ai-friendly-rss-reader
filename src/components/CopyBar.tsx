@@ -1,6 +1,7 @@
 import type { Article } from '../types';
 import { exportToMarkdown } from '../lib/markdown';
 import { api } from '../lib/api';
+import { useMarkMultipleRead } from '../hooks/useArticles';
 
 type Props = {
   articles: Article[];
@@ -9,7 +10,11 @@ type Props = {
 };
 
 export function CopyBar({ articles, onCopy, onClear }: Props) {
+  const markMultipleRead = useMarkMultipleRead();
+
   if (articles.length === 0) return null;
+
+  const unreadArticles = articles.filter((a) => !a.isRead);
 
   const handleCopy = async () => {
     try {
@@ -19,6 +24,13 @@ export function CopyBar({ articles, onCopy, onClear }: Props) {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleMarkRead = () => {
+    markMultipleRead.mutate(
+      unreadArticles.map((a) => a.id),
+      { onSuccess: onClear },
+    );
   };
 
   return (
@@ -31,6 +43,15 @@ export function CopyBar({ articles, onCopy, onClear }: Props) {
         >
           選択解除
         </button>
+        {unreadArticles.length > 0 && (
+          <button
+            onClick={handleMarkRead}
+            disabled={markMultipleRead.isPending}
+            className="px-3 py-1.5 text-sm text-gray-600 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
+          >
+            {markMultipleRead.isPending ? '処理中...' : '一括既読'}
+          </button>
+        )}
         <button
           onClick={handleCopy}
           className="px-3 py-1.5 text-sm text-white bg-blue-600 rounded hover:bg-blue-700"

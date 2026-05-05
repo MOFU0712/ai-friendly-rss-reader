@@ -39,6 +39,11 @@ export const api = {
     },
     markRead: (id: string) =>
       request<{ id: string }>(`/articles/${id}/read`, { method: 'POST' }),
+    markMultipleRead: (articleIds: string[]) =>
+      request<{ marked: number }>('/articles/read', {
+        method: 'POST',
+        body: JSON.stringify({ articleIds }),
+      }),
     saveFavorites: (articleIds: string[]) =>
       request<{ saved: number }>('/articles/favorites', {
         method: 'POST',
