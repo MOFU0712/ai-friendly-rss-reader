@@ -17,3 +17,13 @@ export function useMarkRead() {
     },
   });
 }
+
+export function useFetchFeeds() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => api.cron.fetch(),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['articles'] });
+    },
+  });
+}

@@ -40,7 +40,7 @@ export async function parseFeed(url: string): Promise<ParsedFeed> {
     title: entry.title ?? '(no title)',
     url: entry.link ?? '',
     summary: entry.description ?? null,
-    author: parseAuthor((entry as Record<string, unknown>)['author']),
+    author: parseAuthor((entry as unknown as Record<string, unknown>)['author']),
     publishedAt: parsePublishedAt(entry.published as Date | string | undefined),
   }));
 

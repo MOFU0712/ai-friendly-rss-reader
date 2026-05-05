@@ -23,7 +23,7 @@ app.post('/api/cron/fetch', async (c) => {
 
 export default {
   fetch: app.fetch,
-  async scheduled(_event: ScheduledEvent, env: Env, _ctx: ExecutionContext): Promise<void> {
+  async scheduled(_event: ScheduledEvent, env: Env, _: ExecutionContext): Promise<void> {
     await fetchAllFeeds(env);
   },
 };

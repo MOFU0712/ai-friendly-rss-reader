@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useArticles } from '../hooks/useArticles';
+import { useArticles, useFetchFeeds } from '../hooks/useArticles';
 import { useSelection } from '../hooks/useSelection';
 import { ArticleList } from '../components/ArticleList';
 import { CopyBar } from '../components/CopyBar';
@@ -11,6 +11,7 @@ export function ArticlesPage() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const { data: articles = [], isLoading, error } = useArticles(unreadOnly);
   const { selectedIds, toggle, clear } = useSelection();
+  const fetchFeeds = useFetchFeeds();
 
   const selectedArticles = articles.filter((a) => selectedIds.has(a.id));
 
@@ -19,6 +20,18 @@ export function ArticlesPage() {
       <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-10">
         <h1 className="text-lg font-semibold text-gray-900">🗞 RSS Reader</h1>
         <div className="flex items-center gap-4">
+          <button
+            onClick={() => {
+              fetchFeeds.mutate(undefined, {
+                onSuccess: () => setToastMessage('フィードを更新しました'),
+                onError: () => setToastMessage('更新に失敗しました'),
+              });
+            }}
+            disabled={fetchFeeds.isPending}
+            className="text-sm text-gray-600 hover:text-gray-900 disabled:opacity-50"
+          >
+            {fetchFeeds.isPending ? '更新中...' : '更新'}
+          </button>
           <button
             onClick={() => setUnreadOnly((v) => !v)}
             className="text-sm text-gray-600 hover:text-gray-900"
