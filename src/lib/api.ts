@@ -39,6 +39,18 @@ export const api = {
     },
     markRead: (id: string) =>
       request<{ id: string }>(`/articles/${id}/read`, { method: 'POST' }),
+    saveFavorites: (articleIds: string[]) =>
+      request<{ saved: number }>('/articles/favorites', {
+        method: 'POST',
+        body: JSON.stringify({ articleIds }),
+      }),
+    listFavorites: (params?: { limit?: number; offset?: number }) => {
+      const query = new URLSearchParams();
+      if (params?.limit !== undefined) query.set('limit', String(params.limit));
+      if (params?.offset !== undefined) query.set('offset', String(params.offset));
+      const qs = query.toString();
+      return request<Article[]>(`/articles/favorites${qs ? `?${qs}` : ''}`);
+    },
   },
   cron: {
     fetch: () => request<{ message: string }>('/cron/fetch', { method: 'POST' }),

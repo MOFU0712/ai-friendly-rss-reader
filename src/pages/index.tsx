@@ -38,6 +38,9 @@ export function ArticlesPage() {
           >
             {unreadOnly ? '未読のみ ●' : '全て表示 ○'}
           </button>
+          <Link to="/favorites" className="text-sm text-blue-600 hover:text-blue-700">
+            お気に入り
+          </Link>
           <Link to="/feeds" className="text-sm text-blue-600 hover:text-blue-700">
             フィード管理
           </Link>

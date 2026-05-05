@@ -27,3 +27,10 @@ export function useFetchFeeds() {
     },
   });
 }
+
+export function useFavorites() {
+  return useQuery({
+    queryKey: ['favorites'],
+    queryFn: () => api.articles.listFavorites(),
+  });
+}

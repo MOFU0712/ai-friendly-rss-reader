@@ -46,6 +46,18 @@ export function ArticleCard({ article, isSelected, onToggle }: Props) {
             <span className="truncate">{article.feedTitle}</span>
             <span>·</span>
             <span className="whitespace-nowrap">{formatTimeAgo(new Date(article.publishedAt))}</span>
+            {!article.isRead && (
+              <>
+                <span>·</span>
+                <button
+                  onClick={() => markRead.mutate(article.id)}
+                  disabled={markRead.isPending}
+                  className="text-blue-600 hover:text-blue-700 hover:underline disabled:opacity-50"
+                >
+                  既読にする
+                </button>
+              </>
+            )}
           </div>
           <button
             onClick={handleTitleClick}

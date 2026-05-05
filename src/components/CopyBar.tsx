@@ -1,5 +1,6 @@
 import type { Article } from '../types';
 import { exportToMarkdown } from '../lib/markdown';
+import { api } from '../lib/api';
 
 type Props = {
   articles: Article[];
@@ -10,11 +11,14 @@ type Props = {
 export function CopyBar({ articles, onCopy, onClear }: Props) {
   if (articles.length === 0) return null;
 
-  const handleCopy = () => {
-    navigator.clipboard
-      .writeText(exportToMarkdown(articles))
-      .then(onCopy)
-      .catch(console.error);
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(exportToMarkdown(articles));
+      await api.articles.saveFavorites(articles.map((a) => a.id));
+      onCopy();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
