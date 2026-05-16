@@ -40,3 +40,9 @@ export function useDeleteFeed() {
     },
   });
 }
+
+export function useDiscoverFeed() {
+  return useMutation({
+    mutationFn: (url: string) => api.feeds.discover(url),
+  });
+}

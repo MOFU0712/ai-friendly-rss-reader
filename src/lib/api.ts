@@ -27,6 +27,10 @@ export const api = {
       }),
     delete: (id: string) =>
       request<{ id: string }>(`/feeds/${id}`, { method: 'DELETE' }),
+    discover: (url: string) =>
+      request<{ feeds: { url: string; title: string }[] }>(
+        `/feeds/discover?url=${encodeURIComponent(url)}`
+      ),
   },
   articles: {
     list: (params?: { unreadOnly?: boolean; limit?: number; offset?: number }) => {
