@@ -12,6 +12,7 @@ export function FeedForm({ onSuccess }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [isVerified, setIsVerified] = useState(false);
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const requestIdRef = useRef(0);
   const createFeed = useCreateFeed();
@@ -29,6 +30,7 @@ export function FeedForm({ onSuccess }: Props) {
     setError(null);
     setSuccessMsg(null);
     setCandidates([]);
+    setIsVerified(false);
 
     if (debounceTimer.current) clearTimeout(debounceTimer.current);
 
@@ -46,10 +48,11 @@ export function FeedForm({ onSuccess }: Props) {
           if (data.feeds.length === 1) {
             setUrl(data.feeds[0].url);
             setSuccessMsg('RSSフィードを検出しました');
+            setIsVerified(true);
           } else if (data.feeds.length > 1) {
             setCandidates(data.feeds);
           } else {
-            setError('RSSフィードが見つかりませんでした。URLを直接入力してください。');
+            setError('RSSフィードが見つかりませんでした');
           }
         },
         onError: () => {
@@ -65,6 +68,7 @@ export function FeedForm({ onSuccess }: Props) {
     setCandidates([]);
     setError(null);
     setSuccessMsg('RSSフィードを検出しました');
+    setIsVerified(true);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -76,6 +80,7 @@ export function FeedForm({ onSuccess }: Props) {
       onSuccess: () => {
         setUrl('');
         setCandidates([]);
+        setIsVerified(false);
         onSuccess?.();
       },
       onError: (err) => {
@@ -92,8 +97,10 @@ export function FeedForm({ onSuccess }: Props) {
             type="url"
             value={url}
             onChange={handleUrlChange}
-            placeholder="サイトまたはRSSフィードのURLを入力..."
-            className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pr-16"
+            placeholder="サイトURLを入力してRSSを自動検出..."
+            className={`w-full rounded border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pr-20 ${
+              isVerified ? 'border-green-500 bg-green-50' : 'border-gray-300'
+            }`}
             required
           />
           {discoverFeed.isPending && (
@@ -101,11 +108,16 @@ export function FeedForm({ onSuccess }: Props) {
               検索中...
             </span>
           )}
+          {isVerified && !discoverFeed.isPending && (
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-600">
+              ✓
+            </span>
+          )}
         </div>
         <button
           type="submit"
-          disabled={createFeed.isPending || discoverFeed.isPending}
-          className="px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700 disabled:opacity-50"
+          disabled={!isVerified || createFeed.isPending || discoverFeed.isPending}
+          className="px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {createFeed.isPending ? '追加中...' : '+ 追加'}
         </button>
