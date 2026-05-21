@@ -2,18 +2,14 @@ name = "rss-reader"
 main = "worker/index.ts"
 compatibility_date = "2024-01-01"
 
-[assets]
-directory = "./dist"
-binding = "ASSETS"
-
 [[d1_databases]]
 binding = "DB"
 database_name = "rss-reader-db"
-database_id = "49af1882-6702-4342-8872-1ec4fdf13193"
+database_id = "your-db-id"
 
 [triggers]
 crons = ["0 * * * *"]
 
-[observability.logs]
-enabled = true
-invocation_logs = true
+# Static assets are served by Vite in dev, and Cloudflare Pages in production
+# [site]
+# bucket = "./dist"

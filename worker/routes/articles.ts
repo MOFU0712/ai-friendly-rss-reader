@@ -11,8 +11,9 @@ articlesRouter.get('/', async (c) => {
     const offset = Number(c.req.query('offset') ?? 0);
     const articles = await getArticles(c.env.DB, { unreadOnly, limit, offset });
     return c.json({ data: articles });
-  } catch {
-    return c.json({ error: 'Internal Server Error' }, 500);
+  } catch (e) {
+    console.error('getArticles error:', e);
+    return c.json({ error: 'Internal Server Error', details: String(e) }, 500);
   }
 });
 
